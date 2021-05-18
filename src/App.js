@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+var Tabulator = require('tabulator-tables');
 
 function App() {
   return (
