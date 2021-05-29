@@ -5,7 +5,7 @@ var Tabulator = require('tabulator-tables');
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <h3>Mars Rover</h3>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -19,7 +19,7 @@ function App() {
         >
           Learn React
         </a>
-      </header>
+      </header> */}
     </div>
   );
 }

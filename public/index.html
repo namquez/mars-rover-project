@@ -50,46 +50,55 @@
           <option value="pancam">Panoramic Camera</option>
           <option value="minites">Miniature Thermal Emission Spectrometer (Mini-TES)</option>
         </select>
+        <div class="m-4">
+          <input type="date" id="photoDate" name="trip-start" value="" min="2000-01-01">
+        </div>
 
-        <label for="start">Select date:</label>
-
-        <input type="date" id="photoDate" name="trip-start"
-          value="2018-07-22"
-          min="2000-01-01">
       </div>
     <div id="output"></div>
     </div>
-
+<div id=noContent style="text-align: center;"></div>
     <script>
+
+    let roverName = ""
+    let cameraName = ""
+    let photoDate = ""
+
     document.getElementById('roverName').addEventListener
     ('change', (event) => {
-        let roverName = event.target.value;
-        let cameraName = document.getElementById('cameraName').value;
-        getRoverPhotos(roverName,cameraName);
+        roverName = event.target.value;
+        console.log("hi")
+        getRoverPhotos(roverName, photoDate, cameraName);
 
     })
     document.getElementById('cameraName').addEventListener
     ('change', (event) => {
-        let cameraName = event.target.value;
-        let roverName = document.getElementById('roverName').value;
-        getRoverPhotos(roverName,cameraName);
+        cameraName = event.target.value;
+        getRoverPhotos(roverName, photoDate, cameraName);
     })
     document.getElementById('photoDate').addEventListener
     ('change', (event) => {
-    photoDate = event.target.value;
-    getRoverPhotos(photoDate);
+        photoDate = event.target.value;
+        getRoverPhotos(roverName, photoDate, cameraName);
     })
     
 
-    function getRoverPhotos(roverName, cameraName){
-
-      let apiEndPoint = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?sol=1000${cameraName === "" ? "" : "&camera=" + cameraName}&api_key=7X0Dj8PfpmvMwrIUA5ThOdq09b7JNLcmmeoTLP51`;
+    function getRoverPhotos(roverName, photoDate, cameraName){
+      let d = new Date();
+      let defaultDate =`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
+      let apiEndPoint = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?${photoDate === "" ? "earth_date=" + defaultDate : "earth_date=" + photoDate}${cameraName === "" ? "" : "&camera=" + cameraName}&api_key=7X0Dj8PfpmvMwrIUA5ThOdq09b7JNLcmmeoTLP51`;
 
       fetch(apiEndPoint)
       .then((res)=> res.json())
       .then((data) => {
-        let output = '<h2 class = "m-4">Rovers</h2>';
-          data.photos.forEach(function(photos){
+        if(data.photos.length==0){
+          document.getElementById('noContent').innerHTML = "Sorry, there are no photos available for this query."
+      } else {
+        document.getElementById('noContent').innerHTML = ""
+      }
+
+        let output = '';
+         data.photos.forEach(function(photos){
           output += `
             <div class="container" style="display:flex">
             
@@ -112,7 +121,19 @@
     }
     </script>
 
-
+<script>
+(function() {
+   // your page initialization code here
+   // the DOM will be available here
+   let d = new Date();
+   let month = d.getMonth() < 10 ? `0${d.getMonth()+1}` : d.getMonth()+1;
+   let date = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
+      let defaultDate =`${d.getFullYear()}-${month}-${date}`;
+      if(document.getElementById('photoDate').value === ""){
+        document.getElementById('photoDate').defaultValue = defaultDate;
+      }
+})();
+</script>
 
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
