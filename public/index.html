@@ -29,7 +29,7 @@
   </head>
   <body>
     <div class = "container"></div>
-      <h1 class = "display-4 m-4"> Fetch NASA API </h1>
+      <h1 class = "display-4 m-4"> Fetch NASA APdddI</h1>
       <div class = "d-flex">
       </div>
         <select class = "btn btn-primary m-4" id="roverName">
@@ -61,34 +61,64 @@
     </div>
 
     <script>
+      // STATE 
+    let roverName = "";
+    let cameraName = "";
+    let photoDate = "";
+
+    const cameraOptions = [
+      {
+        rover_name: "curiosity", 
+        cameras: [
+          {
+            label: "Front Hazard Avoidance",
+            value: "fhaz"
+          },
+          {
+            label: "rear hazard",
+            value: ""
+          }
+      ] 
+      },
+      {
+        rover_name: "Spirit", 
+        cameras: [] 
+      }
+    ]
+
+    let currentCameraOptions = []
+
     document.getElementById('roverName').addEventListener
     ('change', (event) => {
-        let roverName = event.target.value;
-        let cameraName = document.getElementById('cameraName').value;
-        getRoverPhotos(roverName,cameraName);
-
+        roverName = event.target.value;
+        cameraName = document.getElementById('cameraName').value;
+        getRoverPhotos();
+        currentCameraOptions = cameraOptions.find(obj => obj.rover_name === roverName)
+        console.log(currentCameraOptions, roverName)
     })
     document.getElementById('cameraName').addEventListener
     ('change', (event) => {
-        let cameraName = event.target.value;
-        let roverName = document.getElementById('roverName').value;
-        getRoverPhotos(roverName,cameraName);
+        cameraName = event.target.value;
+        roverName = document.getElementById('roverName').value;
+        getRoverPhotos();
     })
     document.getElementById('photoDate').addEventListener
     ('change', (event) => {
     photoDate = event.target.value;
-    getRoverPhotos(photoDate);
+    getRoverPhotos();
     })
+
+    let dropdownhtml = ''
+    
     
 
-    function getRoverPhotos(roverName, cameraName){
-
-      let apiEndPoint = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?sol=1000${cameraName === "" ? "" : "&camera=" + cameraName}&api_key=7X0Dj8PfpmvMwrIUA5ThOdq09b7JNLcmmeoTLP51`;
-
+    function getRoverPhotos() {
+      let apiEndPoint = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos?${photoDate === "" ? "" : "earth_date=" + photoDate}${cameraName === "" ? "" : "&camera=" + cameraName}&api_key=7X0Dj8PfpmvMwrIUA5ThOdq09b7JNLcmmeoTLP51`;
+      
       fetch(apiEndPoint)
       .then((res)=> res.json())
       .then((data) => {
-        let output = '<h2 class = "m-4">Rovers</h2>';
+        let output = `<h2 class = "m-4">Rovers</h2><select>${dropdownhtml}</select>`;
           data.photos.forEach(function(photos){
           output += `
             <div class="container" style="display:flex">

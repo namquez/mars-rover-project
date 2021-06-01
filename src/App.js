@@ -1,25 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
+import Title from "./components/Title";
+import { useState } from "react";
 var Tabulator = require('tabulator-tables');
 
 function App() {
+
+  const [myState, setMyState] = useState(0);
+
+  const handleOnClick = () => {
+    // const newState = myState += 1;
+    setMyState(myState + 1);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <h3>Mars Rover</h3>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>App State: {myState}</h1>
+      <Title titleText={"Hey I'm a title"} onClickHandler={handleOnClick} />
     </div>
   );
 }
